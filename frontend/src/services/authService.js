@@ -14,3 +14,17 @@ export const fetchCurrentUser = async () => {
   const { data } = await api.get("/auth/me");
   return data;
 };
+
+export const updateUserProfile = async ({ name, email }) => {
+  const { data } = await api.put("/auth/profile", { name, email });
+  return data;
+};
+
+export const changeUserPassword = async ({ currentPassword, newPassword, confirmPassword }) => {
+  const { data } = await api.put("/auth/change-password", {
+    currentPassword,
+    newPassword,
+    confirmPassword,
+  });
+  return data;
+};

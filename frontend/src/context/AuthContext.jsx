@@ -40,8 +40,15 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     const data = await registerUser({ name, email, password });
-    persistSession(data.token, data.user);
-    return data.user;
+    // Do not automatically log in or persist session.
+    // The user must manually log in from the login page.
+    return data;
+  };
+
+  const updateUser = (updatedUser) => {
+    const mergedUser = { ...user, ...updatedUser };
+    localStorage.setItem("user", JSON.stringify(mergedUser));
+    setUser(mergedUser);
   };
 
   const logout = () => {
@@ -59,6 +66,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

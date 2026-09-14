@@ -18,11 +18,16 @@ import { formatDate } from "../../utils/formatDate";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 
-/**
- * Groups a flat expense list into per-category totals, in a fixed display
- * order so the breakdown doesn't jump around as entries are added/removed.
- */
 const CATEGORY_ORDER = ["Transportation", "Accommodation", "Food", "Activities", "Shopping", "Other"];
+
+const CATEGORY_ICONS = {
+  Transportation: "✈️",
+  Accommodation: "🏨",
+  Food: "🍽️",
+  Activities: "🎟️",
+  Shopping: "🛍️",
+  Other: "🏷️",
+};
 
 const groupByCategory = (expenses) => {
   const totals = new Map();
@@ -35,13 +40,6 @@ const groupByCategory = (expenses) => {
   }));
 };
 
-/**
- * Expenses tab, rendered inside TripDetails. Handles its own data fetching
- * and CRUD so TripDetails only needs to pass a tripId and the trip's
- * planned budget, matching the Itinerary/Accommodation/Transportation tab
- * pattern. Budget totals are derived from the same `expenses` state array,
- * so they update immediately after any add/edit/delete.
- */
 const ExpenseTab = ({ tripId, tripBudget }) => {
   const [expenses, setExpenses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -122,6 +120,8 @@ const ExpenseTab = ({ tripId, tripBudget }) => {
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
   const remainingBudget = (tripBudget || 0) - totalExpenses;
   const categoryTotals = groupByCategory(expenses);
+  const percentageUsed = tripBudget > 0 ? Math.min(Math.round((totalExpenses / tripBudget) * 100), 100) : 0;
+  const isOverBudget = tripBudget > 0 && totalExpenses > tripBudget;
 
   const sortedExpenses = expenses
     .slice()
@@ -129,12 +129,13 @@ const ExpenseTab = ({ tripId, tripBudget }) => {
 
   return (
     <div>
+      {/* Budget Summary Statistics */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
           gap: 16,
-          marginBottom: 20,
+          marginBottom: 16,
         }}
       >
         <StatCard label="Planned Budget" value={formatCurrency(tripBudget)} />
@@ -149,25 +150,64 @@ const ExpenseTab = ({ tripId, tripBudget }) => {
         />
       </div>
 
-      {!isLoading && !error && categoryTotals.length > 0 && (
-        <div className="card" style={{ marginBottom: 20 }}>
-          <h3 style={{ margin: "0 0 12px", fontSize: 15 }}>Expenses by Category</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {categoryTotals.map(({ category, total }) => (
-              <div
-                key={category}
-                style={{ display: "flex", justifyContent: "space-between", fontSize: 14 }}
-              >
-                <span style={{ color: "var(--color-text-muted)" }}>{category}</span>
-                <span style={{ fontWeight: 600 }}>{formatCurrency(total)}</span>
-              </div>
-            ))}
+      {/* Budget Progress Bar */}
+      {tripBudget > 0 && (
+        <div className="card" style={{ padding: "16px 20px", marginBottom: 20 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
+            <span style={{ color: "var(--color-text-muted)" }}>Budget Utilization</span>
+            <span style={{ color: isOverBudget ? "var(--color-danger)" : "var(--color-primary)" }}>
+              {isOverBudget ? `Over Budget by ${formatCurrency(totalExpenses - tripBudget)}` : `${percentageUsed}% used`}
+            </span>
+          </div>
+          <div className="budget-bar-track">
+            <div
+              className={`budget-bar-fill${isOverBudget ? " over" : ""}`}
+              style={{ width: `${percentageUsed}%` }}
+            />
           </div>
         </div>
       )}
 
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
-        <Button onClick={openAddForm} style={{ width: "auto" }}>
+      {/* Category Breakdown */}
+      {!isLoading && !error && categoryTotals.length > 0 && (
+        <div className="card" style={{ marginBottom: 20, padding: "18px 22px" }}>
+          <h3 className="section-title" style={{ margin: "0 0 14px", fontSize: 15 }}>
+            Expenses by Category
+          </h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
+            {categoryTotals.map(({ category, total }) => {
+              const catPercent = totalExpenses > 0 ? Math.round((total / totalExpenses) * 100) : 0;
+              return (
+                <div
+                  key={category}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "10px 14px",
+                    background: "var(--color-bg)",
+                    border: "1px solid var(--color-border)",
+                    borderRadius: 8,
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span>{CATEGORY_ICONS[category] || "🏷️"}</span>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600 }}>{category}</div>
+                      <div style={{ fontSize: 11, color: "var(--color-text-muted)" }}>{catPercent}% of total</div>
+                    </div>
+                  </div>
+                  <span style={{ fontWeight: 700, fontSize: 13 }}>{formatCurrency(total)}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Add Expense Action Button */}
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 18 }}>
+        <Button onClick={openAddForm} style={{ width: "auto", minHeight: 38, padding: "8px 18px" }}>
           + Add Expense
         </Button>
       </div>
@@ -180,11 +220,6 @@ const ExpenseTab = ({ tripId, tripBudget }) => {
         <EmptyState
           title="No expenses added yet"
           description="Add your spending to track it against this trip's budget."
-          action={
-            <Button onClick={openAddForm} style={{ width: "auto" }}>
-              + Add Expense
-            </Button>
-          }
         />
       )}
 
@@ -197,26 +232,47 @@ const ExpenseTab = ({ tripId, tripBudget }) => {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                gap: 12,
+                alignItems: "center",
+                gap: 16,
+                padding: "16px 20px",
                 flexWrap: "wrap",
               }}
             >
               <div style={{ flex: 1, minWidth: 200 }}>
-                <div style={{ fontSize: 13, color: "var(--color-text-muted)", marginBottom: 2 }}>
-                  {expense.category}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <span>{CATEGORY_ICONS[expense.category] || "🏷️"}</span>
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: 0.6,
+                      color: "var(--color-primary)",
+                      background: "rgba(45, 125, 125, 0.08)",
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                    }}
+                  >
+                    {expense.category}
+                  </span>
                 </div>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>{expense.description}</div>
-                <div style={{ fontSize: 13, color: "var(--color-text-muted)", marginTop: 4 }}>
-                  {formatDate(expense.date)}
+                <div style={{ fontWeight: 600, fontSize: 14, color: "var(--color-text)" }}>
+                  {expense.description}
+                </div>
+                <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 4 }}>
+                  🗓 {formatDate(expense.date)}
                 </div>
               </div>
+
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>{formatCurrency(expense.amount)}</div>
+                <div style={{ fontWeight: 700, fontSize: 16, color: "var(--color-text)" }}>
+                  {formatCurrency(expense.amount)}
+                </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   <button
                     type="button"
                     className="btn btn-secondary"
-                    style={{ width: "auto" }}
+                    style={{ minHeight: 30, padding: "4px 10px", fontSize: 12, width: "auto" }}
                     onClick={() => openEditForm(expense)}
                   >
                     Edit
@@ -224,7 +280,15 @@ const ExpenseTab = ({ tripId, tripBudget }) => {
                   <button
                     type="button"
                     className="btn"
-                    style={{ width: "auto", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger)" }}
+                    style={{
+                      minHeight: 30,
+                      padding: "4px 10px",
+                      fontSize: 12,
+                      backgroundColor: "var(--color-danger-bg)",
+                      color: "var(--color-danger)",
+                      border: "1px solid #fecaca",
+                      width: "auto",
+                    }}
                     onClick={() => setExpensePendingDelete(expense)}
                   >
                     Delete

@@ -65,6 +65,18 @@ const getDashboardSummary = asyncHandler(async (req, res) => {
     .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
     .slice(0, 5);
 
+  const ongoingList = trips
+    .filter((trip) => trip.status === "ongoing")
+    .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
+  const completedList = trips
+    .filter((trip) => trip.status === "completed")
+    .sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
+
+  const upcomingList = trips
+    .filter((trip) => trip.status === "upcoming")
+    .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
   res.status(200).json({
     totalTrips,
     upcomingTrips,
@@ -72,6 +84,9 @@ const getDashboardSummary = asyncHandler(async (req, res) => {
     completedTrips,
     totalBudget,
     recentTrips,
+    ongoingList,
+    completedList,
+    upcomingList,
   });
 });
 

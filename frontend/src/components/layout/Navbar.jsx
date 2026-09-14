@@ -1,26 +1,24 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import Button from "../common/Button.jsx";
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const handleLogout = () => {
-    setIsMenuOpen(false);
-    logout();
-    navigate("/login");
-  };
 
   const closeMenu = () => setIsMenuOpen(false);
 
   const linkClass = ({ isActive }) => `navbar-link${isActive ? " active" : ""}`;
 
+  const userInitial = user?.name ? user.name.trim().charAt(0).toUpperCase() : "U";
+  const firstName = user?.name ? user.name.split(" ")[0] : "User";
+
   return (
     <nav className="navbar">
-      <div className="navbar-brand">✈️ Travel Planner</div>
+      <Link to="/dashboard" className="navbar-brand">
+        <span className="navbar-brand-icon">✦</span>
+        Travel Planner
+      </Link>
 
       <button
         type="button"
@@ -33,10 +31,10 @@ const Navbar = () => {
       </button>
 
       <div className="navbar-user">
-        <span>Hi, {user?.name?.split(" ")[0] || "there"}</span>
-        <Button variant="secondary" onClick={handleLogout} style={{ width: "auto" }}>
-          Logout
-        </Button>
+        <Link to="/profile" className="navbar-profile-pill" title="View Profile">
+          <span className="navbar-avatar">{userInitial}</span>
+          <span className="navbar-username">{firstName}</span>
+        </Link>
       </div>
 
       <div className={`navbar-links${isMenuOpen ? " is-open" : ""}`}>

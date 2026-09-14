@@ -1,47 +1,76 @@
 import { Link } from "react-router-dom";
 import TripStatusBadge from "./TripStatusBadge.jsx";
-import Button from "../common/Button.jsx";
 import { formatDate } from "../../utils/formatDate";
 import { formatCurrency } from "../../utils/formatCurrency";
 
 /**
- * `onDeleteClick` is optional so this card can be reused on the Dashboard
- * (read-only "recent trips" list) as well as on My Trips (full actions).
+ * `onDeleteClick` is optional — allows reuse on Dashboard (read-only)
+ * and My Trips (with Edit/Delete actions).
  */
 const TripCard = ({ trip, onDeleteClick }) => {
   return (
-    <div className="card">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-        <Link to={`/trips/${trip._id}`} style={{ textDecoration: "none", color: "inherit" }}>
-          <h3 style={{ margin: "0 0 4px", fontSize: 16 }}>{trip.tripName}</h3>
-          <p style={{ margin: 0, fontSize: 13, color: "var(--color-text-muted)" }}>{trip.destination}</p>
-        </Link>
-        <TripStatusBadge status={trip.status} />
-      </div>
-      <div style={{ display: "flex", gap: 16, fontSize: 13, color: "var(--color-text-muted)", flexWrap: "wrap", marginBottom: onDeleteClick ? 16 : 0 }}>
-        <span>
-          {formatDate(trip.startDate)} → {formatDate(trip.endDate)}
-        </span>
-        <span>
-          {trip.travelers} traveler{trip.travelers > 1 ? "s" : ""}
-        </span>
-        <span>{formatCurrency(trip.budget)}</span>
-      </div>
-      {onDeleteClick && (
-        <div style={{ display: "flex", gap: 10 }}>
-          <Link to={`/trips/${trip._id}/edit`} className="btn btn-secondary" style={{ textDecoration: "none" }}>
-            Edit
-          </Link>
-          <button
-            type="button"
-            className="btn"
-            style={{ backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger)" }}
-            onClick={() => onDeleteClick(trip)}
-          >
-            Delete
-          </button>
+    <div className="trip-card">
+      {/* Decorative gradient header band */}
+      <div className="trip-card-header" />
+
+      <div className="trip-card-body">
+        {/* Title row */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, marginBottom: 6 }}>
+          <h3 className="trip-card-title">{trip.tripName}</h3>
+          <TripStatusBadge status={trip.status} />
         </div>
-      )}
+
+        {/* Destination */}
+        <p className="trip-card-destination">
+          <span>📍</span> {trip.destination}
+        </p>
+
+        {/* Meta */}
+        <div className="trip-card-meta">
+          <span>🗓 {formatDate(trip.startDate)} — {formatDate(trip.endDate)}</span>
+          <span>👥 {trip.travelers} traveler{trip.travelers > 1 ? "s" : ""}</span>
+          <span>💰 {formatCurrency(trip.budget)}</span>
+        </div>
+
+        {/* Footer actions */}
+        <div className="trip-card-footer">
+          <Link
+            to={`/trips/${trip._id}`}
+            className="btn btn-primary"
+            style={{ textDecoration: "none", fontSize: 13, minHeight: 34, padding: "6px 16px", width: "auto" }}
+          >
+            View Trip Details
+          </Link>
+
+          {onDeleteClick && (
+            <>
+              <Link
+                to={`/trips/${trip._id}/edit`}
+                className="btn btn-secondary"
+                style={{ textDecoration: "none", fontSize: 13, minHeight: 34, padding: "6px 12px", width: "auto" }}
+              >
+                Edit
+              </Link>
+              <button
+                type="button"
+                className="btn"
+                style={{
+                  fontSize: 13,
+                  minHeight: 34,
+                  padding: "6px 12px",
+                  backgroundColor: "var(--color-danger-bg)",
+                  color: "var(--color-danger)",
+                  border: "1px solid #fecaca",
+                  width: "auto",
+                }}
+                onClick={() => onDeleteClick(trip)}
+              >
+                Delete
+              </button>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

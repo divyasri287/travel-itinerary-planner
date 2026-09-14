@@ -1,26 +1,63 @@
+/* ============================================================
+   TRAVEL JOURNAL — Global Design System
+   Warm ivory · Muted teal · Editorial typography
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap');
+
 :root {
-  --color-primary: #2563eb;
-  --color-primary-dark: #1d4ed8;
-  --color-bg: #f8fafc;
-  --color-surface: #ffffff;
-  --color-text: #0f172a;
-  --color-text-muted: #64748b;
-  --color-border: #e2e8f0;
-  --color-danger: #dc2626;
-  --color-danger-bg: #fef2f2;
-  --color-success: #16a34a;
-  --color-success-bg: #f0fdf4;
-  --radius: 10px;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.14);
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --skeleton-base: #e7ecf3;
-  --skeleton-shine: #f4f6f9;
+  /* — Brand palette — */
+  --color-primary:       #2d7d7d;
+  --color-primary-dark:  #1f5f5f;
+  --color-accent:        #5c7a4e;
+
+  /* — Backgrounds — */
+  --color-bg:            #faf7f2;
+  --color-bg-alt:        #f2ede4;
+  --color-surface:       #fffef9;
+
+  /* — Text — */
+  --color-text:          #2c2418;
+  --color-text-muted:    #7a6e5f;
+
+  /* — Borders — */
+  --color-border:        #e0d8cc;
+
+  /* — Semantic — */
+  --color-danger:        #b91c1c;
+  --color-danger-bg:     #fef2f2;
+  --color-success:       #166534;
+  --color-success-bg:    #f0fdf4;
+
+  /* — Radius & shadow — */
+  --radius:    10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 3px rgba(44, 36, 24, 0.07);
+  --shadow-md: 0 4px 14px rgba(44, 36, 24, 0.10);
+  --shadow-lg: 0 10px 32px rgba(44, 36, 24, 0.14);
+
+  /* — Typography — */
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-sans:  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* — Skeleton — */
+  --skeleton-base:  #ede8df;
+  --skeleton-shine: #f5f1ea;
 }
+
+/* ============================================================
+   RESET
+   ============================================================ */
 
 * {
   box-sizing: border-box;
+  caret-color: transparent;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+  caret-color: var(--color-primary);
 }
 
 html,
@@ -62,43 +99,74 @@ textarea:focus-visible,
   outline-offset: 2px;
 }
 
-/* --- Layout helpers --- */
+/* ============================================================
+   AUTH PAGES (Login / Register)
+   ============================================================ */
+
 .auth-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: linear-gradient(180deg, #eef2ff 0%, var(--color-bg) 320px);
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(45, 125, 125, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(92, 122, 78, 0.05) 0%, transparent 50%);
 }
 
 .auth-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   background: var(--color-surface);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  padding: 32px 28px;
+  padding: 40px 36px;
   border: 1px solid var(--color-border);
 }
 
 .auth-brand {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--color-text);
+  margin-bottom: 4px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 700;
+  gap: 10px;
+  user-select: none;
+  letter-spacing: -0.3px;
+}
+
+.auth-brand-icon {
   font-size: 20px;
-  margin-bottom: 4px;
 }
 
 .auth-subtitle {
   color: var(--color-text-muted);
   font-size: 14px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
+  user-select: none;
 }
 
+.auth-footer-text {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.auth-footer-text a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ============================================================
+   FORM ELEMENTS
+   ============================================================ */
+
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .form-label {
@@ -107,22 +175,52 @@ textarea:focus-visible,
   font-weight: 600;
   margin-bottom: 6px;
   color: var(--color-text);
+  user-select: none;
+  letter-spacing: 0.1px;
 }
 
 .form-input {
   width: 100%;
-  padding: 10px 12px;
+  height: 40px;
+  padding: 8px 12px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 14px;
+  line-height: 20px;
   background: var(--color-surface);
   color: var(--color-text);
-  transition: border-color 0.15s ease;
+  caret-color: var(--color-primary);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+textarea.form-input {
+  height: auto;
+  min-height: 80px;
+  padding: 10px 12px;
+  line-height: 1.5;
+}
+
+/* Chrome/Edge autofill styling to match warm theme and maintain normal caret height */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--color-surface) inset !important;
+  -webkit-text-fill-color: var(--color-text) !important;
+  caret-color: var(--color-primary) !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
 }
 
 .form-input:focus {
   outline: none;
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(45, 125, 125, 0.12);
+}
+
+.form-input::placeholder {
+  color: #b5a898;
 }
 
 .form-error {
@@ -131,19 +229,26 @@ textarea:focus-visible,
   margin-top: 4px;
 }
 
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
   min-height: 40px;
-  padding: 10px 16px;
+  padding: 10px 18px;
   border-radius: 8px;
   border: none;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s ease, opacity 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  user-select: none;
+  transition: background-color 0.18s ease, opacity 0.15s ease,
+              transform 0.12s ease, box-shadow 0.18s ease;
+  letter-spacing: 0.1px;
 }
 
 .btn:active:not(:disabled) {
@@ -158,10 +263,11 @@ textarea:focus-visible,
 
 .btn-primary:hover:not(:disabled) {
   background-color: var(--color-primary-dark);
+  box-shadow: 0 2px 10px rgba(45, 125, 125, 0.25);
 }
 
 .btn-primary:disabled {
-  opacity: 0.7;
+  opacity: 0.65;
   cursor: not-allowed;
 }
 
@@ -172,11 +278,21 @@ textarea:focus-visible,
 }
 
 .btn-secondary:hover {
-  background-color: #f1f5f9;
+  background-color: var(--color-bg-alt);
+  border-color: #c8bfb3;
 }
 
+/* ============================================================
+   ALERTS
+   ============================================================ */
+
 .alert {
-  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 11px 14px;
   border-radius: 8px;
   font-size: 13px;
   margin-bottom: 16px;
@@ -194,44 +310,72 @@ textarea:focus-visible,
   border: 1px solid #bbf7d0;
 }
 
-.auth-footer-text {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 13px;
-  color: var(--color-text-muted);
+.alert-retry-btn {
+  background: transparent;
+  border: 1px solid currentColor;
+  color: inherit;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  min-height: 28px;
+  transition: background-color 0.15s ease;
 }
 
-.auth-footer-text a {
-  color: var(--color-primary);
-  font-weight: 600;
+.alert-retry-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* --- App shell (Navbar + content) --- */
+/* ============================================================
+   APP SHELL — Navbar + Content
+   ============================================================ */
+
 .app-shell {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
+/* --- Navbar --- */
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 24px;
+  padding: 0 28px;
+  height: 60px;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
   z-index: 10;
+  box-shadow: 0 1px 6px rgba(44, 36, 24, 0.06);
 }
 
 .navbar-brand {
+  font-family: var(--font-serif);
   font-weight: 700;
-  font-size: 18px;
+  font-size: 19px;
+  color: var(--color-text);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   order: 1;
+  letter-spacing: -0.3px;
+  text-decoration: none;
+}
+
+.navbar-brand-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
 }
 
 .navbar-menu-btn {
@@ -240,7 +384,7 @@ textarea:focus-visible,
 
 .navbar-links {
   display: flex;
-  gap: 20px;
+  gap: 4px;
   align-items: center;
   order: 3;
 }
@@ -249,13 +393,21 @@ textarea:focus-visible,
   font-size: 14px;
   font-weight: 500;
   color: var(--color-text-muted);
-  padding: 6px 4px;
-  border-bottom: 2px solid transparent;
+  padding: 6px 12px;
+  border-radius: 7px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.navbar-link:hover {
+  background-color: var(--color-bg-alt);
+  color: var(--color-text);
 }
 
 .navbar-link.active {
   color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
+  background-color: rgba(45, 125, 125, 0.08);
+  font-weight: 600;
 }
 
 .navbar-user {
@@ -266,37 +418,75 @@ textarea:focus-visible,
   order: 4;
 }
 
+.navbar-profile-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 13px;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+              box-shadow 0.15s ease;
+}
+
+.navbar-profile-pill:hover {
+  background: var(--color-bg-alt);
+  border-color: #c8bfb3;
+  box-shadow: var(--shadow-sm);
+}
+
+.navbar-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.navbar-username {
+  color: var(--color-text);
+}
+
+/* ============================================================
+   PAGE LAYOUT
+   ============================================================ */
+
 .page-container {
   flex: 1;
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 28px 24px 60px;
+  padding: 32px 28px 64px;
 }
 
 .page-header {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .page-title {
-  font-size: 22px;
+  font-family: var(--font-serif);
+  font-size: 26px;
   font-weight: 700;
   margin: 0 0 4px;
+  color: var(--color-text);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
 }
 
 .page-subtitle {
   color: var(--color-text-muted);
   font-size: 14px;
   margin: 0;
-}
-
-.card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  padding: 20px;
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .center-page {
@@ -308,11 +498,341 @@ textarea:focus-visible,
   font-size: 14px;
 }
 
-/* =========================================================
-   PHASE 7 — Polish & Final UI/UX Pass
-   ========================================================= */
+/* ============================================================
+   CARDS
+   ============================================================ */
 
-/* --- Loading spinner --- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* ============================================================
+   TRIP CARD
+   ============================================================ */
+
+.trip-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow 0.22s ease, transform 0.22s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.trip-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.trip-card-header {
+  height: 7px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  flex-shrink: 0;
+}
+
+.trip-card-body {
+  padding: 18px 20px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.trip-card-title {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 3px;
+  color: var(--color-text);
+  line-height: 1.25;
+}
+
+.trip-card-destination {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.trip-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.trip-card-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.trip-card-footer {
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   STATUS BADGES
+   ============================================================ */
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.status-badge-upcoming {
+  background: rgba(45, 125, 125, 0.1);
+  color: var(--color-primary);
+}
+
+.status-badge-ongoing {
+  background: rgba(92, 122, 78, 0.12);
+  color: var(--color-accent);
+}
+
+.status-badge-completed {
+  background: var(--color-bg-alt);
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   STAT CARDS
+   ============================================================ */
+
+.stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 16px 20px;
+}
+
+.stat-card-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0 0 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card-value {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+/* ============================================================
+   ITINERARY — Travel journal table style
+   ============================================================ */
+
+.itinerary-day-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.itinerary-day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--color-bg-alt);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.itinerary-day-title {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+
+.itinerary-day-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: rgba(45, 125, 125, 0.1);
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.3px;
+}
+
+.itinerary-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.itinerary-table-header {
+  display: grid;
+  grid-template-columns: 110px 1fr 100px 80px;
+  padding: 8px 20px;
+  background: rgba(45, 125, 125, 0.04);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.itinerary-table-header span {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--color-text-muted);
+}
+
+.itinerary-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 100px 80px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--color-border);
+  align-items: start;
+  gap: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.itinerary-row:last-child {
+  border-bottom: none;
+}
+
+.itinerary-row:hover {
+  background: rgba(45, 125, 125, 0.025);
+}
+
+.itinerary-time {
+  font-size: 12px;
+  color: var(--color-primary);
+  font-weight: 600;
+  padding-top: 2px;
+}
+
+.itinerary-activity {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.itinerary-place {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.itinerary-notes {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 3px;
+  font-style: italic;
+}
+
+.itinerary-cost {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: right;
+}
+
+.itinerary-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+/* Mobile itinerary fallback */
+.itinerary-row-mobile {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.itinerary-row-mobile:last-child {
+  border-bottom: none;
+}
+
+/* ============================================================
+   EXPENSE — Budget progress
+   ============================================================ */
+
+.budget-bar-wrap {
+  margin-top: 10px;
+}
+
+.budget-bar-track {
+  height: 6px;
+  background: var(--color-bg-alt);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.budget-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  transition: width 0.4s ease;
+}
+
+.budget-bar-fill.over {
+  background: linear-gradient(90deg, var(--color-danger) 0%, #f87171 100%);
+}
+
+/* ============================================================
+   SECTION HEADINGS (inside pages)
+   ============================================================ */
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 16px;
+  letter-spacing: -0.2px;
+}
+
+.section-subtitle {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0 0 16px;
+}
+
+/* ============================================================
+   LOADING & SKELETON
+   ============================================================ */
+
 .loader-wrap {
   display: flex;
   flex-direction: column;
@@ -334,40 +854,29 @@ textarea:focus-visible,
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
-/* --- Skeleton loading --- */
 .skeleton {
-  background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 37%, var(--skeleton-base) 63%);
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 25%,
+    var(--skeleton-shine) 37%,
+    var(--skeleton-base) 63%
+  );
   background-size: 400% 100%;
   animation: skeleton-shimmer 1.4s ease infinite;
   border-radius: 6px;
 }
 
 @keyframes skeleton-shimmer {
-  0% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0 50%;
-  }
+  0%   { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
 }
 
-.skeleton-stat-card {
-  height: 78px;
-}
-
-.skeleton-trip-card {
-  height: 132px;
-}
-
-.skeleton-line {
-  height: 12px;
-  margin-bottom: 8px;
-}
+.skeleton-stat-card  { height: 80px; }
+.skeleton-trip-card  { height: 160px; }
+.skeleton-line       { height: 12px; margin-bottom: 8px; }
 
 @media (prefers-reduced-motion: reduce) {
   .spinner,
@@ -380,73 +889,46 @@ textarea:focus-visible,
   }
 }
 
-/* --- Empty state --- */
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
 .empty-state-icon {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: var(--color-bg);
+  background: var(--color-bg-alt);
   border: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  margin: 0 auto 14px;
+  font-size: 24px;
+  margin: 0 auto 12px;
 }
 
-/* --- Alerts with retry --- */
-.alert {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.alert-retry-btn {
-  background: transparent;
-  border: 1px solid currentColor;
-  color: inherit;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 12px;
+.empty-state-title {
+  font-family: var(--font-serif);
+  font-size: 17px;
   font-weight: 700;
-  cursor: pointer;
-  flex-shrink: 0;
-  min-height: 28px;
-  transition: background-color 0.15s ease;
+  color: var(--color-text);
+  margin: 0 0 6px;
 }
 
-.alert-retry-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+.empty-state-description {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  max-width: 340px;
+  margin: 0 auto;
 }
 
-/* --- Toast --- */
-.toast-enter {
-  animation: toast-in 0.22s ease-out;
-}
+/* ============================================================
+   MODAL
+   ============================================================ */
 
-@keyframes toast-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.toast-icon {
-  font-size: 15px;
-  line-height: 1;
-}
-
-/* --- Modal --- */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(44, 36, 24, 0.40);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -457,63 +939,90 @@ textarea:focus-visible,
 }
 
 @keyframes overlay-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .modal-card {
   background: var(--color-surface);
-  border-radius: var(--radius);
-  padding: 24px;
+  border-radius: var(--radius-lg);
+  padding: 28px;
   width: 100%;
   box-shadow: var(--shadow-lg);
   max-height: 90vh;
   overflow-y: auto;
   animation: modal-in 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--color-border);
 }
 
 @keyframes modal-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .modal-title {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
   margin: 0;
-  font-size: 16px;
+  color: var(--color-text);
 }
 
 .modal-close-btn {
   width: auto;
   padding: 4px 10px;
-  font-size: 16px;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.modal-close-btn:hover {
+  background-color: var(--color-bg-alt);
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+
+.toast-enter {
+  animation: toast-in 0.22s ease-out;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.toast-icon {
+  font-size: 15px;
   line-height: 1;
 }
 
-/* --- Navbar (mobile) --- */
+/* ============================================================
+   NAVBAR — Mobile menu button
+   ============================================================ */
+
 .navbar-menu-btn {
   display: none;
   background: transparent;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -523,7 +1032,7 @@ textarea:focus-visible,
 .navbar-menu-btn span::before,
 .navbar-menu-btn span::after {
   display: block;
-  width: 18px;
+  width: 16px;
   height: 2px;
   background: var(--color-text);
   position: relative;
@@ -537,57 +1046,46 @@ textarea:focus-visible,
   left: 0;
 }
 
-.navbar-menu-btn span::before {
-  top: -6px;
-}
+.navbar-menu-btn span::before { top: -5px; }
+.navbar-menu-btn span::after  { top: 5px; }
 
-.navbar-menu-btn span::after {
-  top: 6px;
-}
+.navbar-menu-btn.is-open span            { background: transparent; }
+.navbar-menu-btn.is-open span::before    { top: 0; transform: rotate(45deg); }
+.navbar-menu-btn.is-open span::after     { top: 0; transform: rotate(-45deg); }
 
-.navbar-menu-btn.is-open span {
-  background: transparent;
-}
+/* ============================================================
+   TAB BAR
+   ============================================================ */
 
-.navbar-menu-btn.is-open span::before {
-  top: 0;
-  transform: rotate(45deg);
-}
-
-.navbar-menu-btn.is-open span::after {
-  top: 0;
-  transform: rotate(-45deg);
-}
-
-/* --- Tab bar (scrollable on all sizes, wraps on wide desktop) --- */
 .tab-bar {
   display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: 6px;
+  margin-bottom: 22px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   padding-bottom: 4px;
 }
 
-.tab-bar::-webkit-scrollbar {
-  height: 6px;
-}
-
-.tab-bar::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 999px;
-}
+.tab-bar::-webkit-scrollbar       { height: 4px; }
+.tab-bar::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 999px; }
 
 .tab-pill {
   flex-shrink: 0;
   white-space: nowrap;
+  padding: 7px 16px !important;
+  min-height: 36px !important;
+  font-size: 13px !important;
+  border-radius: 999px !important;
 }
 
-/* --- Form rows (stack on mobile) --- */
+/* ============================================================
+   FORM ROW (responsive)
+   ============================================================ */
+
 .form-row {
   display: flex;
-  gap: 12px;
+  gap: 14px;
 }
 
 .form-row > * {
@@ -595,36 +1093,244 @@ textarea:focus-visible,
   min-width: 0;
 }
 
-/* =========================================================
-   Responsive breakpoints
-   ========================================================= */
+/* ============================================================
+   TRIP FORM — Centered
+   ============================================================ */
+
+.trip-form-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   PROFILE — Avatar
+   ============================================================ */
+
+.profile-avatar-lg {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   DETAIL CHIP GRID (TripDetails header)
+   ============================================================ */
+
+.detail-chip {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.detail-chip-label {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-bottom: 3px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-chip-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* ============================================================
+   TRIP DETAILS — Header card
+   ============================================================ */
+
+.trip-details-header {
+  background: linear-gradient(135deg, #1f5f5f 0%, #2d7d7d 50%, #3d6b3d 100%);
+  border-radius: var(--radius-lg);
+  padding: 28px 28px 24px;
+  margin-bottom: 24px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.trip-details-header::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  pointer-events: none;
+}
+
+.trip-details-header::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 40%;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  pointer-events: none;
+}
+
+.trip-details-title {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: #fff;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+
+.trip-details-destination {
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
+  margin: 0 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.trip-details-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.trip-details-chip {
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 9px 13px;
+  backdrop-filter: blur(4px);
+}
+
+.trip-details-chip-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 3px;
+}
+
+.trip-details-chip-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* ============================================================
+   OVERVIEW — Quick link cards
+   ============================================================ */
+
+.quick-link-card {
+  cursor: pointer;
+  text-align: left;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  padding: 16px;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.quick-link-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 14px rgba(45, 125, 125, 0.12);
+}
+
+.quick-link-icon {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.quick-link-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 3px;
+  color: var(--color-text);
+}
+
+.quick-link-desc {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   DASHBOARD — Greeting section
+   ============================================================ */
+
+.dashboard-greeting {
+  margin-bottom: 32px;
+}
+
+.dashboard-greeting-time {
+  font-size: 13px;
+  color: var(--color-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
+}
+
+.dashboard-greeting-name {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 4px;
+  letter-spacing: -0.5px;
+}
+
+.dashboard-greeting-sub {
+  color: var(--color-text-muted);
+  font-size: 15px;
+  margin: 0;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 
 @media (max-width: 900px) {
   .page-container {
     max-width: 100%;
   }
+
+  .itinerary-table-header,
+  .itinerary-row {
+    grid-template-columns: 100px 1fr 80px 70px;
+  }
 }
 
 @media (max-width: 640px) {
   .page-container {
-    padding: 18px 16px 40px;
-  }
-
-  .auth-page {
-    padding: 16px;
-  }
-
-  .auth-card {
-    padding: 24px 20px;
-  }
-
-  .modal-card {
-    padding: 18px;
+    padding: 20px 16px 48px;
   }
 
   .navbar {
-    padding: 12px 16px;
+    padding: 0 16px;
+    height: auto;
+    min-height: 56px;
     flex-wrap: wrap;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 
   .navbar-menu-btn {
@@ -635,11 +1341,11 @@ textarea:focus-visible,
     display: none;
     flex-direction: column;
     align-items: stretch;
-    gap: 4px;
+    gap: 2px;
     width: 100%;
-    order: 4;
-    padding-top: 12px;
-    margin-top: 12px;
+    order: 5;
+    padding-top: 10px;
+    margin-top: 10px;
     border-top: 1px solid var(--color-border);
   }
 
@@ -648,14 +1354,12 @@ textarea:focus-visible,
   }
 
   .navbar-link {
-    padding: 10px 8px;
-    border-bottom: none;
-    border-radius: 6px;
+    padding: 10px 10px;
+    border-radius: 7px;
   }
 
   .navbar-link.active {
-    background: var(--color-bg);
-    border-bottom: none;
+    background: rgba(45, 125, 125, 0.08);
   }
 
   .navbar-user {
@@ -663,7 +1367,7 @@ textarea:focus-visible,
     margin-left: auto;
   }
 
-  .navbar-user span {
+  .navbar-username {
     display: none;
   }
 
@@ -672,8 +1376,16 @@ textarea:focus-visible,
     gap: 0;
   }
 
+  .auth-card {
+    padding: 28px 22px;
+  }
+
+  .modal-card {
+    padding: 20px;
+  }
+
   .page-title {
-    font-size: 19px;
+    font-size: 22px;
   }
 
   .btn {
@@ -686,5 +1398,50 @@ textarea:focus-visible,
     bottom: 16px;
     min-width: 0;
     max-width: none;
+  }
+
+  /* Itinerary: hide table header, use card-like rows */
+  .itinerary-table-header {
+    display: none;
+  }
+
+  .itinerary-row {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    padding: 12px 16px;
+  }
+
+  .itinerary-time {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .itinerary-main {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .itinerary-cost {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: right;
+  }
+
+  .itinerary-actions {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: end;
+  }
+
+  .trip-details-title {
+    font-size: 22px;
+  }
+
+  .trip-details-chips {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-greeting-name {
+    font-size: 24px;
   }
 }

@@ -15,8 +15,7 @@ const buildInitialState = (initialValues) => ({
 });
 
 /**
- * Shared form for Create Trip and Edit Trip. The parent is responsible for
- * calling the right API (create vs update) inside `onSubmit`.
+ * Centered shared form for Create Trip and Edit Trip.
  */
 const TripForm = ({ initialValues, onSubmit, submitLabel = "Save Trip" }) => {
   const [formData, setFormData] = useState(buildInitialState(initialValues));
@@ -86,80 +85,84 @@ const TripForm = ({ initialValues, onSubmit, submitLabel = "Save Trip" }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="card" style={{ maxWidth: 520 }}>
-      {serverError && <div className="alert alert-error">{serverError}</div>}
+    <div style={{ maxWidth: 660, margin: "0 auto" }}>
+      <form onSubmit={handleSubmit} noValidate className="card" style={{ padding: "32px 28px" }}>
+        {serverError && <div className="alert alert-error">{serverError}</div>}
 
-      <Input
-        id="tripName"
-        name="tripName"
-        label="Trip Name"
-        placeholder="Ooty Vacation"
-        value={formData.tripName}
-        onChange={handleChange}
-        error={fieldErrors.tripName}
-      />
-      <Input
-        id="destination"
-        name="destination"
-        label="Destination"
-        placeholder="Ooty"
-        value={formData.destination}
-        onChange={handleChange}
-        error={fieldErrors.destination}
-      />
-
-      <div className="form-row">
         <Input
-          id="startDate"
-          name="startDate"
-          type="date"
-          label="Start Date"
-          value={formData.startDate}
+          id="tripName"
+          name="tripName"
+          label="Trip Name"
+          placeholder="e.g. Ooty Summer Vacation"
+          value={formData.tripName}
           onChange={handleChange}
-          error={fieldErrors.startDate}
-          min={TODAY}
+          error={fieldErrors.tripName}
         />
         <Input
-          id="endDate"
-          name="endDate"
-          type="date"
-          label="End Date"
-          value={formData.endDate}
+          id="destination"
+          name="destination"
+          label="Destination"
+          placeholder="e.g. Ooty, Nilgiris"
+          value={formData.destination}
           onChange={handleChange}
-          error={fieldErrors.endDate}
-          min={formData.startDate || TODAY}
+          error={fieldErrors.destination}
         />
-      </div>
 
-      <div className="form-row">
-        <Input
-          id="travelers"
-          name="travelers"
-          type="number"
-          min="1"
-          label="Number of Travelers"
-          placeholder="4"
-          value={formData.travelers}
-          onChange={handleChange}
-          error={fieldErrors.travelers}
-        />
-        <Input
-          id="budget"
-          name="budget"
-          type="number"
-          min="0"
-          label="Total Budget (₹)"
-          placeholder="15000"
-          value={formData.budget}
-          onChange={handleChange}
-          error={fieldErrors.budget}
-        />
-      </div>
+        <div className="form-row">
+          <Input
+            id="startDate"
+            name="startDate"
+            type="date"
+            label="Start Date"
+            value={formData.startDate}
+            onChange={handleChange}
+            error={fieldErrors.startDate}
+            min={TODAY}
+          />
+          <Input
+            id="endDate"
+            name="endDate"
+            type="date"
+            label="End Date"
+            value={formData.endDate}
+            onChange={handleChange}
+            error={fieldErrors.endDate}
+            min={formData.startDate || TODAY}
+          />
+        </div>
 
-      <Button type="submit" isLoading={isSubmitting}>
-        {submitLabel}
-      </Button>
-    </form>
+        <div className="form-row">
+          <Input
+            id="travelers"
+            name="travelers"
+            type="number"
+            min="1"
+            label="Number of Travelers"
+            placeholder="4"
+            value={formData.travelers}
+            onChange={handleChange}
+            error={fieldErrors.travelers}
+          />
+          <Input
+            id="budget"
+            name="budget"
+            type="number"
+            min="0"
+            label="Total Budget (₹)"
+            placeholder="15000"
+            value={formData.budget}
+            onChange={handleChange}
+            error={fieldErrors.budget}
+          />
+        </div>
+
+        <div style={{ marginTop: 12 }}>
+          <Button type="submit" isLoading={isSubmitting} style={{ minHeight: 44 }}>
+            {submitLabel}
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 

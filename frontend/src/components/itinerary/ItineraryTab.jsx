@@ -29,8 +29,7 @@ const formatTime = (time) => {
 };
 
 // Groups the flat item list into day buckets, sorted by date, with each
-// day's items sorted by start time. The API already returns items sorted
-// by date + startTime, but we re-sort defensively after local add/edit.
+// day's items sorted by start time.
 const groupByDate = (items) => {
   const groups = new Map();
 
@@ -51,8 +50,8 @@ const groupByDate = (items) => {
 };
 
 /**
- * Day-wise itinerary tab, rendered inside TripDetails. Handles its own
- * data fetching and CRUD so TripDetails only needs to pass a tripId.
+ * Day-wise itinerary tab, rendered inside TripDetails.
+ * Editorial travel-journal day-by-day table format.
  */
 const ItineraryTab = ({ tripId }) => {
   const [items, setItems] = useState([]);
@@ -135,8 +134,9 @@ const ItineraryTab = ({ tripId }) => {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
-        <Button onClick={openAddForm} style={{ width: "auto" }}>
+      {/* Top action header: Single Add button */}
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 18 }}>
+        <Button onClick={openAddForm} style={{ width: "auto", minHeight: 38, padding: "8px 18px" }}>
           + Add Itinerary Item
         </Button>
       </div>
@@ -148,68 +148,71 @@ const ItineraryTab = ({ tripId }) => {
       {!isLoading && !error && items.length === 0 && (
         <EmptyState
           title="No itinerary items yet"
-          description="Add your first stop to start building a day-by-day plan for this trip."
-          action={
-            <Button onClick={openAddForm} style={{ width: "auto" }}>
-              + Add Itinerary Item
-            </Button>
-          }
+          description="Start building your day-by-day travel plan."
         />
       )}
 
       {!isLoading && !error && dayGroups.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div>
           {dayGroups.map((group, index) => (
-            <div key={group.dateKey} className="card">
-              <h3 style={{ margin: "0 0 12px", fontSize: 15 }}>
-                Day {index + 1} · {formatDate(group.dateKey)}
-              </h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div key={group.dateKey} className="itinerary-day-card">
+              {/* Day Header */}
+              <div className="itinerary-day-header">
+                <h3 className="itinerary-day-title">✓ DAY {index + 1}</h3>
+                <span className="itinerary-day-date">{formatDate(group.dateKey).toUpperCase()}</span>
+              </div>
+
+              {/* Day Table */}
+              <div className="itinerary-table">
+                <div className="itinerary-table-header">
+                  <span>Time</span>
+                  <span>Activity / Place</span>
+                  <span style={{ textAlign: "right" }}>Cost</span>
+                  <span style={{ textAlign: "right" }}>Actions</span>
+                </div>
+
                 {group.items.map((item) => (
-                  <div
-                    key={item._id}
-                    style={{
-                      border: "1px solid var(--color-border)",
-                      borderRadius: 8,
-                      padding: 14,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      gap: 12,
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <div style={{ flex: 1, minWidth: 200 }}>
-                      <div style={{ fontSize: 13, color: "var(--color-text-muted)", marginBottom: 2 }}>
-                        {formatTime(item.startTime)} – {formatTime(item.endTime)}
-                      </div>
-                      <div style={{ fontWeight: 600, fontSize: 14 }}>{item.activity}</div>
-                      <div style={{ fontSize: 13, color: "var(--color-text-muted)" }}>{item.place}</div>
-                      {item.notes && (
-                        <div style={{ fontSize: 13, marginTop: 6, color: "var(--color-text)" }}>
-                          {item.notes}
-                        </div>
-                      )}
+                  <div key={item._id} className="itinerary-row">
+                    <div className="itinerary-time">
+                      {item.startTime ? formatTime(item.startTime) : "Anytime"}
+                      {item.endTime ? ` – ${formatTime(item.endTime)}` : ""}
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
-                      <div style={{ fontWeight: 600, fontSize: 14 }}>{formatCurrency(item.estimatedCost)}</div>
-                      <div style={{ display: "flex", gap: 8 }}>
-                        <button
-                          type="button"
-                          className="btn btn-secondary"
-                          style={{ width: "auto" }}
-                          onClick={() => openEditForm(item)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="btn"
-                          style={{ width: "auto", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger)" }}
-                          onClick={() => setItemPendingDelete(item)}
-                        >
-                          Delete
-                        </button>
-                      </div>
+
+                    <div className="itinerary-main">
+                      <div className="itinerary-activity">{item.activity}</div>
+                      <div className="itinerary-place">📍 {item.place}</div>
+                      {item.notes && <div className="itinerary-notes">“{item.notes}”</div>}
+                    </div>
+
+                    <div className="itinerary-cost">
+                      {formatCurrency(item.estimatedCost)}
+                    </div>
+
+                    <div className="itinerary-actions">
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        style={{ minHeight: 28, padding: "3px 8px", fontSize: 12, width: "auto" }}
+                        onClick={() => openEditForm(item)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="btn"
+                        style={{
+                          minHeight: 28,
+                          padding: "3px 8px",
+                          fontSize: 12,
+                          backgroundColor: "var(--color-danger-bg)",
+                          color: "var(--color-danger)",
+                          border: "1px solid #fecaca",
+                          width: "auto",
+                        }}
+                        onClick={() => setItemPendingDelete(item)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 ))}

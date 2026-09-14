@@ -51,7 +51,12 @@ const Register = () => {
     setIsSubmitting(true);
     try {
       await register(formData.name.trim(), formData.email.trim(), formData.password);
-      navigate("/dashboard");
+      navigate("/login", {
+        state: {
+          successMessage: "Registration successful. Please login to continue.",
+          registeredEmail: formData.email.trim(),
+        },
+      });
     } catch (error) {
       setServerError(getErrorMessage(error, "Registration failed. Please try again."));
     } finally {
@@ -62,8 +67,11 @@ const Register = () => {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <div className="auth-brand">✈️ Travel Itinerary Planner</div>
-        <p className="auth-subtitle">Create an account to start planning your trips.</p>
+        <div className="auth-brand">
+          <span className="auth-brand-icon">✦</span>
+          <span>Travel Planner</span>
+        </div>
+        <p className="auth-subtitle">Create an account to start your travel journal.</p>
 
         {serverError && <div className="alert alert-error">{serverError}</div>}
 
@@ -83,7 +91,7 @@ const Register = () => {
             id="email"
             name="email"
             type="email"
-            label="Email"
+            label="Email Address"
             placeholder="you@example.com"
             value={formData.email}
             onChange={handleChange}
@@ -112,9 +120,11 @@ const Register = () => {
             error={fieldErrors.confirmPassword}
             autoComplete="new-password"
           />
-          <Button type="submit" isLoading={isSubmitting}>
-            Create Account
-          </Button>
+          <div style={{ marginTop: 8 }}>
+            <Button type="submit" isLoading={isSubmitting} style={{ minHeight: 44 }}>
+              Create Account
+            </Button>
+          </div>
         </form>
 
         <p className="auth-footer-text">

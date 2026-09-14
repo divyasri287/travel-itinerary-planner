@@ -1,8 +1,8 @@
 const StatCard = ({ label, value }) => {
   return (
-    <div className="card" style={{ textAlign: "left" }}>
-      <p style={{ margin: "0 0 6px", fontSize: 13, color: "var(--color-text-muted)" }}>{label}</p>
-      <p style={{ margin: 0, fontSize: 24, fontWeight: 700 }}>{value}</p>
+    <div className="stat-card">
+      <p className="stat-card-label">{label}</p>
+      <p className="stat-card-value">{value}</p>
     </div>
   );
 };

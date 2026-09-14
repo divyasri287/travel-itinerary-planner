@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Input from "../components/common/Input.jsx";
 import Button from "../components/common/Button.jsx";
@@ -8,14 +8,22 @@ import { getErrorMessage } from "../utils/getErrorMessage";
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    email: location.state?.registeredEmail || "",
+    password: "",
+  });
+  const [successMessage, setSuccessMessage] = useState(
+    location.state?.successMessage || ""
+  );
   const [fieldErrors, setFieldErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    if (serverError) setServerError("");
   };
 
   const validate = () => {
@@ -45,9 +53,13 @@ const Login = () => {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <div className="auth-brand">✈️ Travel Itinerary Planner</div>
-        <p className="auth-subtitle">Welcome back — log in to manage your trips.</p>
+        <div className="auth-brand">
+          <span className="auth-brand-icon">✦</span>
+          <span>Travel Planner</span>
+        </div>
+        <p className="auth-subtitle">Welcome back — log in to continue planning.</p>
 
+        {successMessage && <div className="alert alert-success">{successMessage}</div>}
         {serverError && <div className="alert alert-error">{serverError}</div>}
 
         <form onSubmit={handleSubmit} noValidate>
@@ -55,7 +67,7 @@ const Login = () => {
             id="email"
             name="email"
             type="email"
-            label="Email"
+            label="Email Address"
             placeholder="you@example.com"
             value={formData.email}
             onChange={handleChange}
@@ -73,13 +85,15 @@ const Login = () => {
             error={fieldErrors.password}
             autoComplete="current-password"
           />
-          <Button type="submit" isLoading={isSubmitting}>
-            Log In
-          </Button>
+          <div style={{ marginTop: 8 }}>
+            <Button type="submit" isLoading={isSubmitting} style={{ minHeight: 44 }}>
+              Log In
+            </Button>
+          </div>
         </form>
 
         <p className="auth-footer-text">
-          Don't have an account? <Link to="/register">Register</Link>
+          Don't have an account? <Link to="/register">Create an account</Link>
         </p>
       </div>
     </div>

@@ -12,9 +12,8 @@ const CreateTrip = () => {
 
   return (
     <div>
-      <div className="page-header">
+      <div style={{ maxWidth: 660, margin: "0 auto 24px", textAlign: "center" }}>
         <h1 className="page-title">Create New Trip</h1>
-        <p className="page-subtitle">Fill in the basics — you can add itinerary details later.</p>
       </div>
       <TripForm onSubmit={handleCreate} submitLabel="Create Trip" />
     </div>

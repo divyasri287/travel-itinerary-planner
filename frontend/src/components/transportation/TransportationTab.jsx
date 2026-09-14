@@ -17,8 +17,15 @@ import { formatDate } from "../../utils/formatDate";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 
-// Converts "14:30" -> "2:30 PM" for display only; stored/validated value
-// stays in 24h HH:MM format end to end. Mirrors ItineraryTab's formatTime.
+const TYPE_ICONS = {
+  Flight: "✈️",
+  Train: "🚆",
+  Bus: "🚌",
+  Cab: "🚕",
+  Car: "🚗",
+  Other: "🧭",
+};
+
 const formatTime = (time) => {
   if (!time) return "";
   const [hoursStr, minutesStr] = time.split(":");
@@ -28,11 +35,6 @@ const formatTime = (time) => {
   return `${displayHours}:${minutesStr} ${suffix}`;
 };
 
-/**
- * Transportation tab, rendered inside TripDetails. Handles its own data
- * fetching and CRUD so TripDetails only needs to pass a tripId, matching
- * the AccommodationTab / ItineraryTab pattern.
- */
 const TransportationTab = ({ tripId }) => {
   const [entries, setEntries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -83,11 +85,11 @@ const TransportationTab = ({ tripId }) => {
     if (editingEntry) {
       const updated = await updateTransportationEntry(tripId, editingEntry._id, formValues);
       setEntries((prev) => prev.map((entry) => (entry._id === updated._id ? updated : entry)));
-      setToast({ type: "success", message: "Transportation entry updated successfully." });
+      setToast({ type: "success", message: "Transportation updated successfully." });
     } else {
       const created = await createTransportationEntry(tripId, formValues);
       setEntries((prev) => [...prev, created]);
-      setToast({ type: "success", message: "Transportation entry added successfully." });
+      setToast({ type: "success", message: "Transportation added successfully." });
     }
     closeForm();
   };
@@ -98,11 +100,11 @@ const TransportationTab = ({ tripId }) => {
     try {
       await deleteTransportationEntry(tripId, entryPendingDelete._id);
       setEntries((prev) => prev.filter((entry) => entry._id !== entryPendingDelete._id));
-      setToast({ type: "success", message: "Transportation entry deleted successfully." });
+      setToast({ type: "success", message: "Transportation deleted successfully." });
     } catch (err) {
       setToast({
         type: "error",
-        message: getErrorMessage(err, "Failed to delete transportation entry."),
+        message: getErrorMessage(err, "Failed to delete transportation."),
       });
     } finally {
       setIsDeleting(false);
@@ -120,8 +122,8 @@ const TransportationTab = ({ tripId }) => {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
-        <Button onClick={openAddForm} style={{ width: "auto" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 18 }}>
+        <Button onClick={openAddForm} style={{ width: "auto", minHeight: 38, padding: "8px 18px" }}>
           + Add Transportation
         </Button>
       </div>
@@ -134,16 +136,11 @@ const TransportationTab = ({ tripId }) => {
         <EmptyState
           title="No transportation added yet"
           description="Add your flights, trains, or cabs to keep all your travel legs in one place."
-          action={
-            <Button onClick={openAddForm} style={{ width: "auto" }}>
-              + Add Transportation
-            </Button>
-          }
         />
       )}
 
       {!isLoading && !error && sortedEntries.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {sortedEntries.map((entry) => (
             <div
               key={entry._id}
@@ -151,28 +148,55 @@ const TransportationTab = ({ tripId }) => {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                gap: 12,
+                alignItems: "center",
+                gap: 16,
                 flexWrap: "wrap",
+                padding: "18px 22px",
               }}
             >
-              <div style={{ flex: 1, minWidth: 200 }}>
-                <div style={{ fontSize: 13, color: "var(--color-text-muted)", marginBottom: 2 }}>
-                  {entry.type}
+              <div style={{ flex: 1, minWidth: 220 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <span style={{ fontSize: 18 }}>{TYPE_ICONS[entry.type] || "🧭"}</span>
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: 0.6,
+                      color: "var(--color-primary)",
+                      background: "rgba(45, 125, 125, 0.08)",
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                    }}
+                  >
+                    {entry.type}
+                  </span>
                 </div>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>
+                <h3
+                  style={{
+                    margin: "4px 0 6px",
+                    fontSize: 16,
+                    fontWeight: 700,
+                    fontFamily: "var(--font-serif)",
+                    color: "var(--color-text)",
+                  }}
+                >
                   {entry.from} → {entry.to}
-                </div>
-                <div style={{ fontSize: 13, color: "var(--color-text-muted)", marginTop: 4 }}>
-                  {formatDate(entry.date)} · {formatTime(entry.time)}
+                </h3>
+                <div style={{ fontSize: 13, color: "var(--color-text-muted)" }}>
+                  🗓 {formatDate(entry.date)} {entry.time && `· 🕒 ${formatTime(entry.time)}`}
                 </div>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>{formatCurrency(entry.cost)}</div>
+
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
+                <div style={{ fontWeight: 700, fontSize: 16, color: "var(--color-text)" }}>
+                  {formatCurrency(entry.cost)}
+                </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   <button
                     type="button"
                     className="btn btn-secondary"
-                    style={{ width: "auto" }}
+                    style={{ minHeight: 30, padding: "4px 10px", fontSize: 12, width: "auto" }}
                     onClick={() => openEditForm(entry)}
                   >
                     Edit
@@ -180,7 +204,15 @@ const TransportationTab = ({ tripId }) => {
                   <button
                     type="button"
                     className="btn"
-                    style={{ width: "auto", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger)" }}
+                    style={{
+                      minHeight: 30,
+                      padding: "4px 10px",
+                      fontSize: 12,
+                      backgroundColor: "var(--color-danger-bg)",
+                      color: "var(--color-danger)",
+                      border: "1px solid #fecaca",
+                      width: "auto",
+                    }}
                     onClick={() => setEntryPendingDelete(entry)}
                   >
                     Delete

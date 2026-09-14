@@ -46,19 +46,24 @@ const EditTrip = () => {
 
   return (
     <div>
-      <div className="page-header">
-        <h1 className="page-title">Edit Trip</h1>
-        <p className="page-subtitle">Update your trip details.</p>
+      <div style={{ maxWidth: 660, margin: "0 auto 20px" }}>
+        <Link
+          to="/trips"
+          className="btn btn-secondary"
+          style={{ textDecoration: "none", display: "inline-flex", width: "auto", marginBottom: 16 }}
+        >
+          ← Back to My Trips
+        </Link>
+        <h1 className="page-title" style={{ textAlign: "center", margin: 0 }}>
+          Edit Trip
+        </h1>
       </div>
 
       {isLoading && <Loader label="Loading trip..." />}
 
       {!isLoading && error && (
-        <div>
+        <div style={{ maxWidth: 660, margin: "0 auto" }}>
           <ErrorState message={error} onRetry={() => loadTrip()} />
-          <Link to="/trips" className="btn btn-secondary" style={{ textDecoration: "none", display: "inline-flex", width: "auto" }}>
-            Back to My Trips
-          </Link>
         </div>
       )}
 

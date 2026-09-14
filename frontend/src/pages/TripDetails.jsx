@@ -37,20 +37,80 @@ const DetailRow = ({ label, value }) => (
   </div>
 );
 
-const OverviewTab = ({ trip }) => (
-  <div className="card">
-    <DetailRow label="Trip Name" value={trip.tripName} />
-    <DetailRow label="Destination" value={trip.destination} />
-    <DetailRow label="Start Date" value={formatDate(trip.startDate)} />
-    <DetailRow label="End Date" value={formatDate(trip.endDate)} />
-    <DetailRow
-      label="Travelers"
-      value={`${trip.travelers} traveler${trip.travelers > 1 ? "s" : ""}`}
-    />
-    <DetailRow label="Budget" value={formatCurrency(trip.budget)} />
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 12 }}>
-      <span style={{ fontSize: 13, color: "var(--color-text-muted)" }}>Status</span>
-      <TripStatusBadge status={trip.status} />
+const OverviewTab = ({ trip, setActiveTab }) => (
+  <div>
+    <div className="card" style={{ marginBottom: 20 }}>
+      <h3 className="section-title" style={{ margin: "0 0 16px" }}>Trip Overview</h3>
+      <DetailRow label="Trip Name" value={trip.tripName} />
+      <DetailRow label="Destination" value={trip.destination} />
+      <DetailRow label="Start Date" value={formatDate(trip.startDate)} />
+      <DetailRow label="End Date" value={formatDate(trip.endDate)} />
+      <DetailRow
+        label="Travelers"
+        value={`${trip.travelers} traveler${trip.travelers > 1 ? "s" : ""}`}
+      />
+      <DetailRow label="Total Budget" value={formatCurrency(trip.budget)} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 14 }}>
+        <span style={{ fontSize: 13, color: "var(--color-text-muted)" }}>Trip Status</span>
+        <TripStatusBadge status={trip.status} />
+      </div>
+    </div>
+
+    {/* Quick Links / Module jump cards */}
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+        gap: 14,
+      }}
+    >
+      <div
+        className="quick-link-card"
+        onClick={() => setActiveTab("itinerary")}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === "Enter" && setActiveTab("itinerary")}
+      >
+        <div className="quick-link-icon">📍</div>
+        <div className="quick-link-title">Daily Itinerary</div>
+        <div className="quick-link-desc">Plan day-to-day activities</div>
+      </div>
+
+      <div
+        className="quick-link-card"
+        onClick={() => setActiveTab("accommodation")}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === "Enter" && setActiveTab("accommodation")}
+      >
+        <div className="quick-link-icon">🏨</div>
+        <div className="quick-link-title">Accommodations</div>
+        <div className="quick-link-desc">Hotel & stay reservations</div>
+      </div>
+
+      <div
+        className="quick-link-card"
+        onClick={() => setActiveTab("transportation")}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === "Enter" && setActiveTab("transportation")}
+      >
+        <div className="quick-link-icon">✈️</div>
+        <div className="quick-link-title">Transportation</div>
+        <div className="quick-link-desc">Flights, trains, cabs</div>
+      </div>
+
+      <div
+        className="quick-link-card"
+        onClick={() => setActiveTab("expenses")}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === "Enter" && setActiveTab("expenses")}
+      >
+        <div className="quick-link-icon">💰</div>
+        <div className="quick-link-title">Expenses</div>
+        <div className="quick-link-desc">Track budget & spends</div>
+      </div>
     </div>
   </div>
 );
@@ -93,13 +153,13 @@ const TripDetails = () => {
   }, [id]);
 
   const backLink = (
-    <Link to="/trips" className="btn btn-secondary" style={{ textDecoration: "none", display: "inline-flex" }}>
+    <Link to="/trips" className="btn btn-secondary" style={{ textDecoration: "none", display: "inline-flex", width: "auto" }}>
       ← Back to My Trips
     </Link>
   );
 
   if (isLoading) {
-    return <Loader label="Loading trip..." />;
+    return <Loader label="Loading trip details..." />;
   }
 
   if (notFound) {
@@ -130,40 +190,110 @@ const TripDetails = () => {
 
   return (
     <div>
-      <div style={{ marginBottom: 20 }}>{backLink}</div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18, flexWrap: "wrap", gap: 12 }}>
+        {backLink}
+        <Link
+          to={`/trips/${trip._id}/edit`}
+          className="btn btn-secondary"
+          style={{ textDecoration: "none", width: "auto" }}
+        >
+          ✏️ Edit Trip Details
+        </Link>
+      </div>
 
-      <div
-        className="page-header"
-        style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}
-      >
-        <div>
-          <h1 className="page-title">{trip.tripName}</h1>
-          <p className="page-subtitle">{trip.destination}</p>
+      {/* Primary Trip Header Card — Travel Journal Cover Style */}
+      <div className="trip-details-header">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            flexWrap: "wrap",
+            gap: 12,
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: 1.2,
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.75)",
+                marginBottom: 6,
+              }}
+            >
+              Trip Details
+            </div>
+            <h1 className="trip-details-title">{trip.tripName}</h1>
+            <p className="trip-details-destination">
+              <span>📍</span> <strong>{trip.destination}</strong>
+            </p>
+          </div>
+          <TripStatusBadge status={trip.status} />
         </div>
-        <TripStatusBadge status={trip.status} />
+
+        {/* Clear Trip Summary Chips */}
+        <div className="trip-details-chips" style={{ position: "relative", zIndex: 1 }}>
+          <div className="trip-details-chip">
+            <div className="trip-details-chip-label">Dates</div>
+            <div className="trip-details-chip-value">
+              {formatDate(trip.startDate)} → {formatDate(trip.endDate)}
+            </div>
+          </div>
+
+          <div className="trip-details-chip">
+            <div className="trip-details-chip-label">Travelers</div>
+            <div className="trip-details-chip-value">
+              {trip.travelers} traveler{trip.travelers > 1 ? "s" : ""}
+            </div>
+          </div>
+
+          <div className="trip-details-chip">
+            <div className="trip-details-chip-label">Budget</div>
+            <div className="trip-details-chip-value">
+              {formatCurrency(trip.budget)}
+            </div>
+          </div>
+
+          <div className="trip-details-chip">
+            <div className="trip-details-chip-label">Status</div>
+            <div className="trip-details-chip-value" style={{ textTransform: "capitalize" }}>
+              {trip.status}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="tab-bar" role="tablist" aria-label="Trip sections">
-        {TABS.map((tab) => (
-          <button
-            key={tab.value}
-            type="button"
-            role="tab"
-            aria-selected={activeTab === tab.value}
-            onClick={() => setActiveTab(tab.value)}
-            className="btn tab-pill"
-            style={{
-              backgroundColor: activeTab === tab.value ? "var(--color-primary)" : "var(--color-surface)",
-              color: activeTab === tab.value ? "#fff" : "var(--color-text)",
-              border: "1px solid var(--color-border)",
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
+      {/* Clear Navigation Tabs */}
+      <div className="tab-bar" role="tablist" aria-label="Trip sections" style={{ marginBottom: 24 }}>
+        {TABS.map((tab) => {
+          const isActive = activeTab === tab.value;
+          return (
+            <button
+              key={tab.value}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => setActiveTab(tab.value)}
+              className="btn tab-pill"
+              style={{
+                backgroundColor: isActive ? "var(--color-primary)" : "var(--color-surface)",
+                color: isActive ? "#fff" : "var(--color-text)",
+                border: isActive ? "1px solid var(--color-primary)" : "1px solid var(--color-border)",
+                fontWeight: isActive ? 600 : 500,
+              }}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
-      {activeTab === "overview" && <OverviewTab trip={trip} />}
+      {/* Tab Panels */}
+      {activeTab === "overview" && <OverviewTab trip={trip} setActiveTab={setActiveTab} />}
       {activeTab === "itinerary" && <ItineraryTab tripId={trip._id} />}
       {activeTab === "accommodation" && <AccommodationTab tripId={trip._id} />}
       {activeTab === "transportation" && <TransportationTab tripId={trip._id} />}

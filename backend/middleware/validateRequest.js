@@ -50,6 +50,56 @@ const validateLogin = (req, res, next) => {
 };
 
 /**
+ * Validates the request body for PUT /api/auth/profile
+ */
+const validateUpdateProfile = (req, res, next) => {
+  const { name, email } = req.body;
+  const errors = [];
+
+  if (!name || typeof name !== "string" || name.trim().length < 2) {
+    errors.push("Name must be at least 2 characters");
+  } else if (name.trim().length > 60) {
+    errors.push("Name must be at most 60 characters");
+  }
+
+  if (!email || typeof email !== "string" || !EMAIL_REGEX.test(email.trim())) {
+    errors.push("A valid email address is required");
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({ message: errors.join(", ") });
+  }
+
+  next();
+};
+
+/**
+ * Validates the request body for PUT /api/auth/change-password
+ */
+const validateChangePassword = (req, res, next) => {
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+  const errors = [];
+
+  if (!currentPassword || typeof currentPassword !== "string") {
+    errors.push("Current password is required");
+  }
+
+  if (!newPassword || typeof newPassword !== "string" || newPassword.length < 6) {
+    errors.push("New password must be at least 6 characters");
+  }
+
+  if (confirmPassword !== undefined && confirmPassword !== newPassword) {
+    errors.push("New passwords do not match");
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({ message: errors.join(", ") });
+  }
+
+  next();
+};
+
+/**
  * Validates the request body for POST /api/trips and PUT /api/trips/:id.
  * On PUT, fields are optional individually but if present must be valid
  * (partial updates are allowed), so we only validate fields that exist.
@@ -360,6 +410,8 @@ const validateExpense = (isCreate) => (req, res, next) => {
 module.exports = {
   validateRegister,
   validateLogin,
+  validateUpdateProfile,
+  validateChangePassword,
   validateTrip,
   validateItinerary,
   validateAccommodation,

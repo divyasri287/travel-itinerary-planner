@@ -17,11 +17,6 @@ import { formatDate } from "../../utils/formatDate";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 
-/**
- * Accommodation tab, rendered inside TripDetails. Handles its own data
- * fetching and CRUD so TripDetails only needs to pass a tripId, matching
- * the ItineraryTab pattern used for day-wise itinerary items.
- */
 const AccommodationTab = ({ tripId }) => {
   const [entries, setEntries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,11 +67,11 @@ const AccommodationTab = ({ tripId }) => {
     if (editingEntry) {
       const updated = await updateAccommodationEntry(tripId, editingEntry._id, formValues);
       setEntries((prev) => prev.map((entry) => (entry._id === updated._id ? updated : entry)));
-      setToast({ type: "success", message: "Accommodation entry updated successfully." });
+      setToast({ type: "success", message: "Accommodation updated successfully." });
     } else {
       const created = await createAccommodationEntry(tripId, formValues);
       setEntries((prev) => [...prev, created]);
-      setToast({ type: "success", message: "Accommodation entry added successfully." });
+      setToast({ type: "success", message: "Accommodation added successfully." });
     }
     closeForm();
   };
@@ -87,11 +82,11 @@ const AccommodationTab = ({ tripId }) => {
     try {
       await deleteAccommodationEntry(tripId, entryPendingDelete._id);
       setEntries((prev) => prev.filter((entry) => entry._id !== entryPendingDelete._id));
-      setToast({ type: "success", message: "Accommodation entry deleted successfully." });
+      setToast({ type: "success", message: "Accommodation deleted successfully." });
     } catch (err) {
       setToast({
         type: "error",
-        message: getErrorMessage(err, "Failed to delete accommodation entry."),
+        message: getErrorMessage(err, "Failed to delete accommodation."),
       });
     } finally {
       setIsDeleting(false);
@@ -105,8 +100,8 @@ const AccommodationTab = ({ tripId }) => {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
-        <Button onClick={openAddForm} style={{ width: "auto" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 18 }}>
+        <Button onClick={openAddForm} style={{ width: "auto", minHeight: 38, padding: "8px 18px" }}>
           + Add Accommodation
         </Button>
       </div>
@@ -119,16 +114,11 @@ const AccommodationTab = ({ tripId }) => {
         <EmptyState
           title="No accommodation added yet"
           description="Add where you're staying to keep all your stay details in one place."
-          action={
-            <Button onClick={openAddForm} style={{ width: "auto" }}>
-              + Add Accommodation
-            </Button>
-          }
         />
       )}
 
       {!isLoading && !error && sortedEntries.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {sortedEntries.map((entry) => (
             <div
               key={entry._id}
@@ -136,24 +126,48 @@ const AccommodationTab = ({ tripId }) => {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                gap: 12,
+                alignItems: "center",
+                gap: 16,
                 flexWrap: "wrap",
+                padding: "18px 22px",
               }}
             >
-              <div style={{ flex: 1, minWidth: 200 }}>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>{entry.hotelName}</div>
-                <div style={{ fontSize: 13, color: "var(--color-text-muted)" }}>{entry.address}</div>
-                <div style={{ fontSize: 13, color: "var(--color-text-muted)", marginTop: 4 }}>
-                  {formatDate(entry.checkIn)} – {formatDate(entry.checkOut)}
+              <div style={{ flex: 1, minWidth: 220 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <span style={{ fontSize: 18 }}>🏨</span>
+                  <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, fontFamily: "var(--font-serif)" }}>
+                    {entry.hotelName}
+                  </h3>
+                </div>
+                <div style={{ fontSize: 13, color: "var(--color-text-muted)", marginBottom: 6 }}>
+                  📍 {entry.address}
+                </div>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    fontSize: 12,
+                    color: "var(--color-primary)",
+                    backgroundColor: "rgba(45, 125, 125, 0.08)",
+                    padding: "3px 10px",
+                    borderRadius: 999,
+                    fontWeight: 600,
+                  }}
+                >
+                  🗓 Check-in: {formatDate(entry.checkIn)} → Check-out: {formatDate(entry.checkOut)}
                 </div>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>{formatCurrency(entry.cost)}</div>
+
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
+                <div style={{ fontWeight: 700, fontSize: 16, color: "var(--color-text)" }}>
+                  {formatCurrency(entry.cost)}
+                </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   <button
                     type="button"
                     className="btn btn-secondary"
-                    style={{ width: "auto" }}
+                    style={{ minHeight: 30, padding: "4px 10px", fontSize: 12, width: "auto" }}
                     onClick={() => openEditForm(entry)}
                   >
                     Edit
@@ -161,7 +175,15 @@ const AccommodationTab = ({ tripId }) => {
                   <button
                     type="button"
                     className="btn"
-                    style={{ width: "auto", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger)" }}
+                    style={{
+                      minHeight: 30,
+                      padding: "4px 10px",
+                      fontSize: 12,
+                      backgroundColor: "var(--color-danger-bg)",
+                      color: "var(--color-danger)",
+                      border: "1px solid #fecaca",
+                      width: "auto",
+                    }}
                     onClick={() => setEntryPendingDelete(entry)}
                   >
                     Delete

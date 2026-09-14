@@ -70,33 +70,45 @@ const MyTrips = () => {
     <div>
       <div
         className="page-header"
-        style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 12 }}
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 16,
+          marginBottom: 24,
+        }}
       >
-        <div>
-          <h1 className="page-title">My Trips</h1>
-          <p className="page-subtitle">All the trips you've planned.</p>
-        </div>
-        <Link to="/trips/new" className="btn btn-primary" style={{ textDecoration: "none", width: "auto" }}>
+        <h1 className="page-title" style={{ margin: 0 }}>My Trips</h1>
+        <Link
+          to="/trips/new"
+          className="btn btn-primary"
+          style={{ textDecoration: "none", width: "auto", minHeight: 40, padding: "8px 20px" }}
+        >
           + Create New Trip
         </Link>
       </div>
 
-      <div className="tab-bar">
-        {FILTERS.map((filter) => (
-          <button
-            key={filter.value}
-            type="button"
-            onClick={() => setStatusFilter(filter.value)}
-            className="btn tab-pill"
-            style={{
-              backgroundColor: statusFilter === filter.value ? "var(--color-primary)" : "var(--color-surface)",
-              color: statusFilter === filter.value ? "#fff" : "var(--color-text)",
-              border: "1px solid var(--color-border)",
-            }}
-          >
-            {filter.label}
-          </button>
-        ))}
+      <div className="tab-bar" style={{ marginBottom: 24 }}>
+        {FILTERS.map((filter) => {
+          const isActive = statusFilter === filter.value;
+          return (
+            <button
+              key={filter.value}
+              type="button"
+              onClick={() => setStatusFilter(filter.value)}
+              className="btn tab-pill"
+              style={{
+                backgroundColor: isActive ? "var(--color-primary)" : "var(--color-surface)",
+                color: isActive ? "#fff" : "var(--color-text)",
+                border: isActive ? "1px solid var(--color-primary)" : "1px solid var(--color-border)",
+                fontWeight: isActive ? 600 : 500,
+              }}
+            >
+              {filter.label}
+            </button>
+          );
+        })}
       </div>
 
       {isLoading && <SkeletonGrid count={6} minWidth={280} cardClassName="skeleton skeleton-trip-card" />}
@@ -108,19 +120,14 @@ const MyTrips = () => {
           title={trips.length === 0 ? "No trips yet" : "No trips match this filter"}
           description={
             trips.length === 0
-              ? "Create your first trip to start building an itinerary."
-              : "Try a different status filter, or create a new trip."
-          }
-          action={
-            <Link to="/trips/new" className="btn btn-primary" style={{ textDecoration: "none", width: "auto" }}>
-              + Create New Trip
-            </Link>
+              ? "Start planning your next journey."
+              : "Try selecting a different status filter."
           }
         />
       )}
 
       {!isLoading && !error && filteredTrips.length > 0 && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 18 }}>
           {filteredTrips.map((trip) => (
             <TripCard key={trip._id} trip={trip} onDeleteClick={setTripPendingDelete} />
           ))}
