@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { fetchTrips, deleteTrip as deleteTripApi } from "../services/tripService";
 import TripCard from "../components/trip/TripCard.jsx";
 import EmptyState from "../components/common/EmptyState.jsx";
-import Loader from "../components/common/Loader.jsx";
+import ErrorState from "../components/common/ErrorState.jsx";
+import { SkeletonGrid } from "../components/common/Skeleton.jsx";
 import ConfirmModal from "../components/common/ConfirmModal.jsx";
 import Toast from "../components/common/Toast.jsx";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 const FILTERS = [
   { value: "all", label: "All" },
@@ -31,7 +33,7 @@ const MyTrips = () => {
       const data = await fetchTrips();
       setTrips(data);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to load trips.");
+      setError(getErrorMessage(err, "Failed to load trips."));
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +58,7 @@ const MyTrips = () => {
     } catch (err) {
       setToast({
         type: "error",
-        message: err.response?.data?.message || "Failed to delete trip.",
+        message: getErrorMessage(err, "Failed to delete trip."),
       });
     } finally {
       setIsDeleting(false);
@@ -74,18 +76,18 @@ const MyTrips = () => {
           <h1 className="page-title">My Trips</h1>
           <p className="page-subtitle">All the trips you've planned.</p>
         </div>
-        <Link to="/trips/new" className="btn btn-primary" style={{ textDecoration: "none" }}>
+        <Link to="/trips/new" className="btn btn-primary" style={{ textDecoration: "none", width: "auto" }}>
           + Create New Trip
         </Link>
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
+      <div className="tab-bar">
         {FILTERS.map((filter) => (
           <button
             key={filter.value}
             type="button"
             onClick={() => setStatusFilter(filter.value)}
-            className="btn"
+            className="btn tab-pill"
             style={{
               backgroundColor: statusFilter === filter.value ? "var(--color-primary)" : "var(--color-surface)",
               color: statusFilter === filter.value ? "#fff" : "var(--color-text)",
@@ -97,9 +99,9 @@ const MyTrips = () => {
         ))}
       </div>
 
-      {isLoading && <Loader label="Loading your trips..." />}
+      {isLoading && <SkeletonGrid count={6} minWidth={280} cardClassName="skeleton skeleton-trip-card" />}
 
-      {!isLoading && error && <div className="alert alert-error">{error}</div>}
+      {!isLoading && error && <ErrorState message={error} onRetry={loadTrips} />}
 
       {!isLoading && !error && filteredTrips.length === 0 && (
         <EmptyState
@@ -110,7 +112,7 @@ const MyTrips = () => {
               : "Try a different status filter, or create a new trip."
           }
           action={
-            <Link to="/trips/new" className="btn btn-primary" style={{ textDecoration: "none" }}>
+            <Link to="/trips/new" className="btn btn-primary" style={{ textDecoration: "none", width: "auto" }}>
               + Create New Trip
             </Link>
           }

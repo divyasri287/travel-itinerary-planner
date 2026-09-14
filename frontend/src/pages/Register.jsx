@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Input from "../components/common/Input.jsx";
 import Button from "../components/common/Button.jsx";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 const Register = () => {
   const { register } = useAuth();
@@ -52,7 +53,7 @@ const Register = () => {
       await register(formData.name.trim(), formData.email.trim(), formData.password);
       navigate("/dashboard");
     } catch (error) {
-      setServerError(error.response?.data?.message || "Registration failed. Please try again.");
+      setServerError(getErrorMessage(error, "Registration failed. Please try again."));
     } finally {
       setIsSubmitting(false);
     }

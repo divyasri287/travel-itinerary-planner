@@ -1,5 +1,10 @@
 const Loader = ({ label = "Loading..." }) => {
-  return <div className="center-page">{label}</div>;
+  return (
+    <div className="loader-wrap" role="status" aria-live="polite">
+      <div className="spinner" aria-hidden="true" />
+      <span>{label}</span>
+    </div>
+  );
 };
 
 export default Loader;

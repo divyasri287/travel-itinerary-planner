@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Input from "../components/common/Input.jsx";
 import Button from "../components/common/Button.jsx";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 const Login = () => {
   const { login } = useAuth();
@@ -35,7 +36,7 @@ const Login = () => {
       await login(formData.email.trim(), formData.password);
       navigate("/dashboard");
     } catch (error) {
-      setServerError(error.response?.data?.message || "Login failed. Please try again.");
+      setServerError(getErrorMessage(error, "Login failed. Please try again."));
     } finally {
       setIsSubmitting(false);
     }

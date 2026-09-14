@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Input from "../common/Input.jsx";
 import Button from "../common/Button.jsx";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 const TODAY = new Date().toISOString().split("T")[0];
 
@@ -78,7 +79,7 @@ const TripForm = ({ initialValues, onSubmit, submitLabel = "Save Trip" }) => {
         budget: Number(formData.budget),
       });
     } catch (error) {
-      setServerError(error.response?.data?.message || "Something went wrong. Please try again.");
+      setServerError(getErrorMessage(error));
     } finally {
       setIsSubmitting(false);
     }
@@ -107,60 +108,52 @@ const TripForm = ({ initialValues, onSubmit, submitLabel = "Save Trip" }) => {
         error={fieldErrors.destination}
       />
 
-      <div style={{ display: "flex", gap: 12 }}>
-        <div style={{ flex: 1 }}>
-          <Input
-            id="startDate"
-            name="startDate"
-            type="date"
-            label="Start Date"
-            value={formData.startDate}
-            onChange={handleChange}
-            error={fieldErrors.startDate}
-            min={TODAY}
-          />
-        </div>
-        <div style={{ flex: 1 }}>
-          <Input
-            id="endDate"
-            name="endDate"
-            type="date"
-            label="End Date"
-            value={formData.endDate}
-            onChange={handleChange}
-            error={fieldErrors.endDate}
-            min={formData.startDate || TODAY}
-          />
-        </div>
+      <div className="form-row">
+        <Input
+          id="startDate"
+          name="startDate"
+          type="date"
+          label="Start Date"
+          value={formData.startDate}
+          onChange={handleChange}
+          error={fieldErrors.startDate}
+          min={TODAY}
+        />
+        <Input
+          id="endDate"
+          name="endDate"
+          type="date"
+          label="End Date"
+          value={formData.endDate}
+          onChange={handleChange}
+          error={fieldErrors.endDate}
+          min={formData.startDate || TODAY}
+        />
       </div>
 
-      <div style={{ display: "flex", gap: 12 }}>
-        <div style={{ flex: 1 }}>
-          <Input
-            id="travelers"
-            name="travelers"
-            type="number"
-            min="1"
-            label="Number of Travelers"
-            placeholder="4"
-            value={formData.travelers}
-            onChange={handleChange}
-            error={fieldErrors.travelers}
-          />
-        </div>
-        <div style={{ flex: 1 }}>
-          <Input
-            id="budget"
-            name="budget"
-            type="number"
-            min="0"
-            label="Total Budget (₹)"
-            placeholder="15000"
-            value={formData.budget}
-            onChange={handleChange}
-            error={fieldErrors.budget}
-          />
-        </div>
+      <div className="form-row">
+        <Input
+          id="travelers"
+          name="travelers"
+          type="number"
+          min="1"
+          label="Number of Travelers"
+          placeholder="4"
+          value={formData.travelers}
+          onChange={handleChange}
+          error={fieldErrors.travelers}
+        />
+        <Input
+          id="budget"
+          name="budget"
+          type="number"
+          min="0"
+          label="Total Budget (₹)"
+          placeholder="15000"
+          value={formData.budget}
+          onChange={handleChange}
+          error={fieldErrors.budget}
+        />
       </div>
 
       <Button type="submit" isLoading={isSubmitting}>

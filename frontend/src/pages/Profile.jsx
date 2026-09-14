@@ -20,13 +20,13 @@ const Profile = () => {
       <div className="card" style={{ maxWidth: 420 }}>
         <div className="form-group">
           <div className="form-label">Name</div>
-          <div>{user?.name}</div>
+          <div style={{ fontSize: 15 }}>{user?.name}</div>
         </div>
-        <div className="form-group">
+        <div className="form-group" style={{ marginBottom: 24 }}>
           <div className="form-label">Email</div>
-          <div>{user?.email}</div>
+          <div style={{ fontSize: 15 }}>{user?.email}</div>
         </div>
-        <Button variant="secondary" onClick={handleLogout}>
+        <Button variant="secondary" onClick={handleLogout} style={{ width: "auto" }}>
           Logout
         </Button>
       </div>

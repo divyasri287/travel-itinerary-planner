@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const toastStyle = {
+const toastWrapStyle = {
   position: "fixed",
   bottom: 24,
   right: 24,
@@ -23,9 +23,15 @@ const Toast = ({ message, type = "success", onClose, duration = 3500 }) => {
   if (!message) return null;
 
   return (
-    <div style={toastStyle}>
-      <div className={`alert ${type === "success" ? "alert-success" : "alert-error"}`} style={{ margin: 0, boxShadow: "var(--shadow-md)" }}>
-        {message}
+    <div className="toast-wrap" style={toastWrapStyle} role="status" aria-live="polite">
+      <div
+        className={`alert toast-enter ${type === "success" ? "alert-success" : "alert-error"}`}
+        style={{ margin: 0, boxShadow: "var(--shadow-md)", justifyContent: "flex-start" }}
+      >
+        <span className="toast-icon" aria-hidden="true">
+          {type === "success" ? "✅" : "⚠️"}
+        </span>
+        <span>{message}</span>
       </div>
     </div>
   );

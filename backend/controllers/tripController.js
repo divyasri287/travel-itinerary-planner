@@ -1,4 +1,8 @@
 const Trip = require("../models/Trip");
+const Itinerary = require("../models/Itinerary");
+const Accommodation = require("../models/Accommodation");
+const Transportation = require("../models/Transportation");
+const Expense = require("../models/Expense");
 const asyncHandler = require("../utils/asyncHandler");
 
 /**
@@ -137,9 +141,15 @@ const updateTrip = asyncHandler(async (req, res) => {
  * @access  Private
  */
 const deleteTrip = asyncHandler(async (req, res) => {
+  // Cascade-delete this trip's itinerary items, accommodation entries,
+  // transportation entries, and expenses first so no orphaned records are
+  // left behind in MongoDB.
+  await Itinerary.deleteMany({ tripId: req.trip._id });
+  await Accommodation.deleteMany({ tripId: req.trip._id });
+  await Transportation.deleteMany({ tripId: req.trip._id });
+  await Expense.deleteMany({ tripId: req.trip._id });
+
   await req.trip.deleteOne();
-  // Note: cascading deletion of itinerary/accommodation/transportation/
-  // expenses will be added once those models exist, in later phases.
 
   res.status(200).json({ message: "Trip deleted successfully" });
 });

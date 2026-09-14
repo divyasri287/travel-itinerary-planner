@@ -3,9 +3,15 @@ import { Link, useParams } from "react-router-dom";
 import { fetchTripById } from "../services/tripService";
 import TripStatusBadge from "../components/trip/TripStatusBadge.jsx";
 import EmptyState from "../components/common/EmptyState.jsx";
+import ErrorState from "../components/common/ErrorState.jsx";
 import Loader from "../components/common/Loader.jsx";
+import ItineraryTab from "../components/itinerary/ItineraryTab.jsx";
+import AccommodationTab from "../components/accommodation/AccommodationTab.jsx";
+import TransportationTab from "../components/transportation/TransportationTab.jsx";
+import ExpenseTab from "../components/expense/ExpenseTab.jsx";
 import { formatDate } from "../utils/formatDate";
 import { formatCurrency } from "../utils/formatCurrency";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 const TABS = [
   { value: "overview", label: "Overview" },
@@ -14,13 +20,6 @@ const TABS = [
   { value: "transportation", label: "Transportation" },
   { value: "expenses", label: "Expenses" },
 ];
-
-const ComingSoonTab = ({ label }) => (
-  <EmptyState
-    title="Coming in a later phase"
-    description={`${label} will be available here once this section is built.`}
-  />
-);
 
 const DetailRow = ({ label, value }) => (
   <div
@@ -65,32 +64,32 @@ const TripDetails = () => {
   const [notFound, setNotFound] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadTrip = async () => {
-      setIsLoading(true);
-      setError("");
-      setNotFound(false);
-      try {
-        const data = await fetchTripById(id);
-        if (isMounted) setTrip(data);
-      } catch (err) {
-        if (!isMounted) return;
-        if (err.response?.status === 404) {
-          setNotFound(true);
-        } else {
-          setError(err.response?.data?.message || "Failed to load this trip.");
-        }
-      } finally {
-        if (isMounted) setIsLoading(false);
+  const loadTrip = async (isMountedRef = { current: true }) => {
+    setIsLoading(true);
+    setError("");
+    setNotFound(false);
+    try {
+      const data = await fetchTripById(id);
+      if (isMountedRef.current) setTrip(data);
+    } catch (err) {
+      if (!isMountedRef.current) return;
+      if (err.response?.status === 404) {
+        setNotFound(true);
+      } else {
+        setError(getErrorMessage(err, "Failed to load this trip."));
       }
-    };
+    } finally {
+      if (isMountedRef.current) setIsLoading(false);
+    }
+  };
 
-    loadTrip();
+  useEffect(() => {
+    const isMountedRef = { current: true };
+    loadTrip(isMountedRef);
     return () => {
-      isMounted = false;
+      isMountedRef.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const backLink = (
@@ -120,7 +119,7 @@ const TripDetails = () => {
     return (
       <div>
         <div style={{ marginBottom: 20 }}>{backLink}</div>
-        <div className="alert alert-error">{error}</div>
+        <ErrorState message={error} onRetry={() => loadTrip()} />
       </div>
     );
   }
@@ -144,13 +143,15 @@ const TripDetails = () => {
         <TripStatusBadge status={trip.status} />
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
+      <div className="tab-bar" role="tablist" aria-label="Trip sections">
         {TABS.map((tab) => (
           <button
             key={tab.value}
             type="button"
+            role="tab"
+            aria-selected={activeTab === tab.value}
             onClick={() => setActiveTab(tab.value)}
-            className="btn"
+            className="btn tab-pill"
             style={{
               backgroundColor: activeTab === tab.value ? "var(--color-primary)" : "var(--color-surface)",
               color: activeTab === tab.value ? "#fff" : "var(--color-text)",
@@ -163,9 +164,10 @@ const TripDetails = () => {
       </div>
 
       {activeTab === "overview" && <OverviewTab trip={trip} />}
-      {activeTab !== "overview" && (
-        <ComingSoonTab label={TABS.find((tab) => tab.value === activeTab)?.label} />
-      )}
+      {activeTab === "itinerary" && <ItineraryTab tripId={trip._id} />}
+      {activeTab === "accommodation" && <AccommodationTab tripId={trip._id} />}
+      {activeTab === "transportation" && <TransportationTab tripId={trip._id} />}
+      {activeTab === "expenses" && <ExpenseTab tripId={trip._id} tripBudget={trip.budget} />}
     </div>
   );
 };

@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import TripForm from "../components/trip/TripForm.jsx";
 import Loader from "../components/common/Loader.jsx";
+import ErrorState from "../components/common/ErrorState.jsx";
 import { fetchTripById, updateTrip } from "../services/tripService";
 import { toInputDate } from "../utils/formatDate";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 const EditTrip = () => {
   const { id } = useParams();
@@ -13,28 +15,28 @@ const EditTrip = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadTrip = async () => {
-      setIsLoading(true);
-      setError("");
-      try {
-        const data = await fetchTripById(id);
-        if (isMounted) setTrip(data);
-      } catch (err) {
-        if (isMounted) {
-          setError(err.response?.data?.message || "Failed to load this trip.");
-        }
-      } finally {
-        if (isMounted) setIsLoading(false);
+  const loadTrip = async (isMountedRef = { current: true }) => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const data = await fetchTripById(id);
+      if (isMountedRef.current) setTrip(data);
+    } catch (err) {
+      if (isMountedRef.current) {
+        setError(getErrorMessage(err, "Failed to load this trip."));
       }
-    };
+    } finally {
+      if (isMountedRef.current) setIsLoading(false);
+    }
+  };
 
-    loadTrip();
+  useEffect(() => {
+    const isMountedRef = { current: true };
+    loadTrip(isMountedRef);
     return () => {
-      isMounted = false;
+      isMountedRef.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleUpdate = async (tripData) => {
@@ -53,8 +55,8 @@ const EditTrip = () => {
 
       {!isLoading && error && (
         <div>
-          <div className="alert alert-error">{error}</div>
-          <Link to="/trips" className="btn btn-secondary" style={{ textDecoration: "none", display: "inline-flex" }}>
+          <ErrorState message={error} onRetry={() => loadTrip()} />
+          <Link to="/trips" className="btn btn-secondary" style={{ textDecoration: "none", display: "inline-flex", width: "auto" }}>
             Back to My Trips
           </Link>
         </div>
