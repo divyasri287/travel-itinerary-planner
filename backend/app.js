@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 
 const authRoutes = require("./routes/authRoutes");
+const tripRoutes = require("./routes/tripRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 const { notFound, errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
@@ -23,7 +25,9 @@ app.get("/api/health", (req, res) => {
 
 // --- Routes ---
 app.use("/api/auth", authRoutes);
-// Phase 2+ will add: /api/trips, /api/trips/:tripId/itinerary,
+app.use("/api/trips", tripRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+// Phase 3+ will add: /api/trips/:tripId/itinerary,
 // /api/trips/:tripId/accommodation, /api/trips/:tripId/transportation,
 // /api/trips/:tripId/expenses, /api/ai
 

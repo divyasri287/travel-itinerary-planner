@@ -5,6 +5,9 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import MyTrips from "./pages/MyTrips.jsx";
+import CreateTrip from "./pages/CreateTrip.jsx";
+import EditTrip from "./pages/EditTrip.jsx";
+import TripDetails from "./pages/TripDetails.jsx";
 import Profile from "./pages/Profile.jsx";
 
 import MainLayout from "./layouts/MainLayout.jsx";
@@ -35,6 +38,9 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/trips" element={<MyTrips />} />
+          <Route path="/trips/new" element={<CreateTrip />} />
+          <Route path="/trips/:id" element={<TripDetails />} />
+          <Route path="/trips/:id/edit" element={<EditTrip />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>
